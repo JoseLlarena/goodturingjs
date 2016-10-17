@@ -1,4 +1,4 @@
-const GOOD_TURING = function()
+module.exports.good_turing = function()
 {	
 	'use strict';
 
@@ -16,8 +16,8 @@ const GOOD_TURING = function()
 				const cf_above = count_freq[c+1] || 0;				
 				smoothed_counts[c] = c > cf_above ? c : (c+1) * (cf_above + 1)/ count_freq[c];
 			}
-// 			if(!undef(smoothed_counts[0]))
-// 				smoothed_counts[0] *= count_freq[0];
+			if(!undef(smoothed_counts[0]))
+				smoothed_counts[0] *= count_freq[0];
 
 			return smoothed_counts; 
 		},
