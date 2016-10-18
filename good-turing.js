@@ -1,9 +1,10 @@
-module.exports.good_turing = function()
+module.exports = (function()
 {	
 	'use strict';
 
 	const undef = obj => typeof obj === 'undefined', keys = Object.keys,
 			log = Math.log, exp = Math.exp, sqrt = Math.sqrt, abs = Math.abs, sq = x => x*x;	
+			
 	const o =
 	{		
 		adaptive_minmax(count_freq, probs = false)
@@ -128,4 +129,4 @@ module.exports.good_turing = function()
 	};
 
 	return o;
-}()
+}());

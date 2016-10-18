@@ -1,0 +1,23 @@
+{
+  "name": "goodturingjs",
+  "version": "1.0.0",
+  "description": "smooting of counts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "smoothing",
+    "counts",
+    "probability"
+  ],
+  "author": "Jose Llarena",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "mocha": "^3.1.2"
+  },
+  "dependencies": {
+    "commander": "^2.9.0"
+  }
+}
