@@ -9,13 +9,11 @@ program
   	.option('-o, --output <output>', 'output|probability [c|p]', /^(c|p)$/,'c')
   	.option('-c, --confidence <number>', 'confidence level', parseFloat, 1.96)
    	.action
-   	(
-		file => 
-		{
+   	(file => 
+	{
 			  console.log('arg...', file);
 			  console.log('algo...', program.algo);
 			  console.log('output...', program.output);
 			  console.log('confidence...', program.confidence);
-		}
-	)
+	})
 	.parse(process.argv);
