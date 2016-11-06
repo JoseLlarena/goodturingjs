@@ -2,8 +2,7 @@ module.exports = (function()
 {	
 	'use strict';
 
-	const undef = obj => typeof obj === 'undefined', keys = Object.keys,
-			log = Math.log, exp = Math.exp, sqrt = Math.sqrt, abs = Math.abs, sq = x => x*x;	
+	const undef = obj => typeof obj === 'undefined', {keys} = Object, {log , exp , sqrt, abs} = Math, sq = x => x*x;	
 			
 	const o =
 	{		
