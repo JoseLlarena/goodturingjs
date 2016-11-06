@@ -4,7 +4,7 @@
   "description": "smooting of counts",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test.js"
+    "test": "mocha"
   },
   "keywords": [
     "smoothing",
