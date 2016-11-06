@@ -10,14 +10,28 @@ module.exports = (function()
 		{ 
 			const smoothed_counts = {};			  				
 			 
-			for(let c of keys(count_freq))
+			for(let count of keys(count_freq))
 			{
-				c = +c;
+				const c = +count;
 				const cf_above = count_freq[c+1] || 0;				
 				smoothed_counts[c] = c > cf_above ? c : (c+1) * (cf_above + 1)/ count_freq[c];
 			}
+
 			if(!undef(smoothed_counts[0]))
 				smoothed_counts[0] *= count_freq[0];
+
+			if(probs === true)
+			{
+				let N = 0;
+				for(const c of keys(smoothed_counts))
+				{
+					N += (+c === 0? 1 : count_freq[c])*smoothed_counts[c];
+				}
+				for(const c of keys(smoothed_counts))
+				{
+					smoothed_counts[c] /= N;
+				}
+			}	
 
 			return smoothed_counts; 
 		},
