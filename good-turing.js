@@ -7,21 +7,21 @@ module.exports = (function()
 	const o =
 	{		
 		adaptive_minmax(count_freq, probs = false)
-		{ 
+		{  
 			const smoothed_counts = {};			  				
 			 
-			for(let count of keys(count_freq))
+			for(const count of keys(count_freq))
 			{
-				const c = +count;
-				const cf_above = count_freq[c+1] || 0;				
-				smoothed_counts[c] = c > cf_above ? c : (c+1) * (cf_above + 1)/ count_freq[c];
-			}
+				const c = +count; 
+				const f_above = count_freq[c+1] || 0;		
+				smoothed_counts[c] = c > f_above ? c : (c+1) * (f_above + 1) / count_freq[c];
+			} 
 			
 			if(!undef(smoothed_counts[0]))
 				smoothed_counts[0] *= count_freq[0];
 
 			if(probs === true)
-			{
+			{  
 				let N = 0;
 				for(const c of keys(smoothed_counts))
 				{

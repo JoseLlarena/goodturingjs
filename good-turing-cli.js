@@ -1,46 +1,95 @@
 'use strict';
 
-const program = require('commander'), fs = require('fs'), gt = require('./good-turing.js'), zz = what => console.log(what);
-
-program
+const fs = require('fs'), gt = require('./good-turing.js'), {log} = console, {keys} = Object, undef = _ => typeof _ === 'undefined';
+ 
+const program = coerced(require('commander')
 	.version('1.0.0')	 	
-  	.description('smooths counts')
-  	.usage('<count frequency file> -a -o -c')
-  	.option('-i, --input <output>', 'input file')
-  	.option('-o, --output <output>', 'output file')
-  	.option('-r, --result <result>', 'output|probability [c|p]', /^(c|p)$/,'c')
-  	.option('-a, --algo <algo>', 'smoothing algorithm [s|a]', /^(s|a)$/,'s')  
-  	.option('-c, --confidence <number>', 'confidence level', parseFloat, 1.96)    
-	.parse(process.argv);
+  	.description(
+		  `recalculates counts and count probabilities of a probability mass distribution using good-turing smoothing
+  <input file> should contain two whitespace-separated columns, the first being the raw count and the secound its frequency
+  <output file> will be created/overwritten with two tab-separated columnns, the first being the input raw count and the second the smoothed count or its smoothed probability
+  for zero raw counts, the smooth count and its probability are aggregated over all symbols with zero counts 
+  `)
+  	.usage('<input file> <output file> [options]')
+	.arguments('<input file> <output file>')
+  	.option('-t, --type [c|p]', 'output type: smoothed counts [c] or smoothed probability of counts [p], defaults to [c]', type => type.trim().toUpperCase())
+  	.option('-a, --algo [s|m]', 'smoothing algorithm: simple [s] or adaptive minmax [m], defaults to [s]', algo => algo.trim().toUpperCase())  
+  	.option('-c, --confidence <number>', 'confidence level for simple good-turing, defaults to 1.96', parseFloat)    
+	.parse(process.argv));
 
-zz(program.args);
+const 	algo = program.algo === 'M'? gt.adaptive_minmax : gt.simple, 
+		infile = program.args[0], outfile = program.args[1];
+
+smoothed_to(outfile, algo(count_freq_from(infile), program.type === 'P', program.confidence));
+
+
+function coerced(program)
+{
+	if(program.args.length != 2)
+	{
+		program.help(text => '\n  NEEDS <input file> AND <output file>\n'+ text);	
+	}
+
+	program.type = program.type || 'C';
+	if(!/[C|P]/.test(program.type))
+	{
+		program.help(text => `\n  TYPE NEEDS TO BE [c] OR [p], BUT WAS ${program.type}\n${text}`);
+	}
 	
-const contents = fs.readFileSync(program.input, 'utf8');
+	program.algo = program.algo || 'S';
+	if(!/[S|M]/.test(program.algo))
+	{
+		program.help(text => '\n  ALGO NEEDS TO BE [s] OR [m]\n'+ text);
+	}
 
-const count_freq = {};
+	if(!undef(program.confidence))
+	{
+		if(!isNaN(program.confidence) && isFinite(program.confidence) && program.confidence >= 0)
+		{
+			if(program.algo !== 'S') program.help(text => '\n  CONFIDENCE IS ONLY APPLICABLE TO THE [s] OPTION\n'+ text);
+		}
+		else
+		{
+			program.help(text => '\n  CONFIDENCE NEEDS TO BE A POSITIVE NUMBER\n'+ text);
+		}	
+	}
+	program.confidence = program.confidence || 1.96;
 
-for(const line of contents.split('\n'))	
-{
-	const [c, f] = line.split(/\s+/).filter(Boolean);
-	count_freq[c] = f;
+	return program;
 }
 
-const smoothed = gt.simple(count_freq);
-
-let out = '';
-for(const raw of Object.keys(smoothed).sort())
+function count_freq_from(file)
 {
-	out += `${raw}\t${smoothed[raw]}\n`;
+	const contents = fs.readFileSync(file, 'utf8');
+
+	const count_freq = {};
+
+	for(const line of contents.split('\n'))	
+	{
+		const [c, f] = line.split(/\s+/).filter(Boolean);
+		count_freq[c] = +f;
+	}
+
+	return count_freq;
 }
 
-console.log(out);
-		
-fs.writeFile(program.output, out, err =>
+function smoothed_to(file, smoothed)
 {
-    if(err) 
-    {
-        return console.log(err);
-    }
+	let out = '';
+	for(const raw of keys(smoothed).map(c => +c).sort((a, b) => a > b ? 1: a < b? -1 : 0))
+	{
+		out += `${raw}\t${smoothed[raw]}\n`;
+	}
 
-    console.log("The file was saved!");
-}); 
+	log(out);
+			
+	fs.writeFile(file, out, err =>
+	{
+		if(err) 
+		{
+			return log(err);
+		}
+	});
+
+	return file;
+}
