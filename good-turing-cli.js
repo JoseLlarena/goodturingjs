@@ -57,37 +57,50 @@ function coerced(program)
 
 	return program;
 }
-
+ 
 function count_freq_from(file)
 {
-	const contents = fs.readFileSync(file, 'utf8');
-
-	const count_freq = {};
-
-	for(const line of contents.split('\n'))	
+	try
 	{
-		const [c, f] = line.split(/\s+/).filter(Boolean);
-		count_freq[c] = +f;
-	}
+		const valid_row = /^\s*\d+\s+\d+\s*$/, white_space = /\s+/;
+		const contents = fs.readFileSync(file, 'utf8');
 
-	return count_freq;
+		const count_freq = {};
+
+		for(const line of contents.split('\n'))	
+		{
+			if(!valid_row.test(line)) throw {name: 'Invalid Row Structure', message: 'row has invalid structure: '+line};
+			const [c, f] = line.split(white_space).filter(Boolean);
+			count_freq[c] = +f;
+		}
+
+		if(keys(count_freq).length === 0) throw {name: 'Invalid File Contents', message: 'contents of file are invalid'};
+
+		return count_freq;
+	}
+	catch(exception)
+	{
+		log(exception);
+		process.exit(1);
+	}
 }
 
 function smoothed_to(file, smoothed)
 {
-	let out = '';
+	let output = '';
 	for(const raw of keys(smoothed).map(c => +c).sort((a, b) => a > b ? 1: a < b? -1 : 0))
 	{
-		out += `${raw}\t${smoothed[raw]}\n`;
+		output += `${raw}\t${smoothed[raw]}\n`;
 	}
 
-	log(out);
+	log(output);
 			
-	fs.writeFile(file, out, err =>
+	fs.writeFile(file, output, err =>
 	{
 		if(err) 
 		{
-			return log(err);
+			log(err);
+			process.exit(-1);
 		}
 	});
 
