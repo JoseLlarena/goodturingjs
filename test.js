@@ -1,5 +1,5 @@
 'use strict'; 	
-const should = require('should'), gt = require('./good-turing.js');
+const should = require('should'),  gt = require('./good-turing.min.js');
 const {assign, keys} = Object, {exp} = Math;  
 
 describe('api', _ =>
