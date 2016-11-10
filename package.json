@@ -4,7 +4,7 @@
   "description": "smooting of counts",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha -R min"
+    "test": "mocha"
   },
   "keywords": [
     "smoothing",
@@ -19,6 +19,7 @@
     "browserify": "^13.1.1",
     "gulp": "^3.9.1",
     "gulp-jshint": "^2.0.2",
+    "gulp-mocha": "^3.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.0",
     "jshint": "^2.9.4",

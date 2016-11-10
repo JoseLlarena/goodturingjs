@@ -1,3 +1,4 @@
+//jshint esversion:6, node: true
 'use strict';
 
 const fs = require('fs'), gt = require('./good-turing.js'), {log} = console, {keys} = Object, undef = _ => typeof _ === 'undefined';

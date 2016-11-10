@@ -1,5 +1,6 @@
+//jshint esversion: 6, node: true, -W008 
 'use strict'; 	
-const should = require('should'),  gt = require('./good-turing.min.js');
+const should = require('should'), gt = require('./good-turing.min.js'), {describe, it} = require('mocha');
 const {assign, keys} = Object, {exp} = Math;  
 
 describe('api', _ =>
@@ -29,7 +30,6 @@ describe('api', _ =>
 		for(const count of keys(smoothed))
 			(+(+smoothed[count]).toPrecision('4')).should.eql(gold_standard[count]);
 	});
-
 
 	const count_freq2 = {0: 9, 1: 8, 2: 6, 3: 5, 4: 5, 5: 3, 6: 1};		
 

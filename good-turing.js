@@ -1,4 +1,4 @@
-//jshint esversion:6
+//jshint esversion:6, -W008 
 module.exports = (function()
 {	
 	'use strict';

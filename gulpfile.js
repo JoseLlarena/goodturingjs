@@ -1,14 +1,15 @@
 const gulp = require('gulp'),
-    task = (name, deps, fn) => gulp.task(name, deps, fn), {src: src, dest: dst} = gulp,
+    task = (name, deps, fn) => gulp.task(name, deps, fn), {src: src, dest: dst, watch: watch} = gulp,
     linter = require('gulp-jshint'),
     rename = require('gulp-rename'),
     browserify = require('browserify'),
     babel = require('babelify'),
     uglify = require('gulp-uglify'),
     source = require('vinyl-source-stream'),
-    buffer = require('vinyl-buffer');
+    buffer = require('vinyl-buffer'),
+    mocha = require('gulp-mocha');
 	
-task('lint', _ => src(['good-turing.js']).pipe(linter()).pipe(linter.reporter('default')));
+task('lint', _ => src(['good-turing.js', 'good-turing-cli.js', 'test.js']).pipe(linter()).pipe(linter.reporter('default')));
 
 task('compile', ['lint'],  _ =>
             browserify('./good-turing.js', {debug: true, standalone: 'good_turing'})
@@ -20,4 +21,8 @@ task('compile', ['lint'],  _ =>
             .pipe(rename('good-turing.min.js')) 
 			.pipe(dst('.')));
 
-task('default', ['compile']);
+task('test', ['compile'],  _ => src(['test.js']).pipe(mocha({reporter: 'spec'})));
+
+task('watch', _ => gulp.watch(['good-turing.js', 'good-turing-cli.js', 'test.js'], ['test']));
+
+task('default', ['watch']);
