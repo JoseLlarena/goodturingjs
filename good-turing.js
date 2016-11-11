@@ -1,4 +1,8 @@
 //jshint esversion:6, -W008 
+/**
+ * @module good_turing
+ * 
+ */
 module.exports = (function()
 {	
 	'use strict';

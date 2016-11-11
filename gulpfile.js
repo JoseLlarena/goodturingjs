@@ -7,7 +7,8 @@ const gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     source = require('vinyl-source-stream'),
     buffer = require('vinyl-buffer'),
-    mocha = require('gulp-mocha');
+    mocha = require('gulp-mocha'),
+    jsdoc = require('gulp-jsdoc3');
 	
 task('lint', _ => src(['good-turing.js', 'good-turing-cli.js', 'test.js']).pipe(linter()).pipe(linter.reporter('default')));
 
@@ -23,6 +24,8 @@ task('compile', ['lint'],  _ =>
 
 task('test', ['compile'],  _ => src(['test.js']).pipe(mocha({reporter: 'spec'})));
 
-task('watch', _ => gulp.watch(['good-turing.js', 'good-turing-cli.js', 'test.js'], ['test']));
+task('doc', ['test'], _ => src(['README.md', 'good-turing.js'], {read: false}).pipe(jsdoc()));
 
-task('default', ['watch']);
+task('watch', _ =>  gulp.watch(['good-turing.js', 'good-turing-cli.js', 'test.js'], ['doc']));
+
+task('default', ['doc']);
