@@ -35,12 +35,12 @@ describe('api', _ =>
 
 	it('computes smoothed counts, using adaptive minmax',  function()
 	{ 		
-		gt.adaptive_minmax(count_freq2).should.eql({0: 9, 1: 1.75, 2: 3, 3: 4.8, 4: 4, 5: 5, 6: 6});
+		gt.minmax(count_freq2).should.eql({0: 9, 1: 1.75, 2: 3, 3: 4.8, 4: 4, 5: 5, 6: 6});
 	});  	
 	
 	it('computes smoothed probability, using adaptive minmax',  function()
 	{ 			
-		const smoothed = gt.adaptive_minmax(count_freq2, true);		 
+		const smoothed = gt.minmax(count_freq2, true);		 
 
 		const expected = {0: .0849, 1: .0165, 2: .0283, 3: .0453, 4: .0377, 5: .0472, 6: .0566};	
 

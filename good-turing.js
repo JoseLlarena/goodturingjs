@@ -1,23 +1,33 @@
 //jshint esversion:6, -W008 
 /**
- * provides functions to compute smoothing of probability mass distributions
+ * Functions to compute smoothing of probability mass distributions
  * 
  * @module good_turing
  * 
  */
-
 module.exports = (function()
 {	
 	'use strict';
 
-	const undef = obj => typeof obj === 'undefined', {keys} = Object, {log , exp , sqrt, abs} = Math, sq = x => x*x;	
-			
+	const {keys} = Object, {log , exp , sqrt, abs} = Math, sq = x => x*x, undef = obj => typeof obj === 'undefined';	
+
 	const o =
 	{
+	 
 		/**
 		 *
-		 * */		
-		adaptive_minmax(count_freq, probs = false)
+		 * 	Smooths provided counts or gives their smoothed probability.
+		 *	For performance reasons, parameters are not validated.
+		 * 
+		 * 	@alias module:good_turing#minmax	
+		 *	@public
+		 *	@readonly
+		 *	@param {!dict.<integer, integer>} count_freq - A map from raw counts to their frequencies.
+		 *	@param {...integer} count_freq.0..inf - The raw count with its frequency.
+		 *	@param {!boolean} [probs=false] - Flag to indicate whether smoothed probabilities or smoothed counts should be returned.
+		 *	@returns {dict.<integer, float>} - A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.
+		 */		
+		minmax(count_freq, probs = false)
 		{  
 			const smoothed_counts = {};			  				
 			 
@@ -47,6 +57,21 @@ module.exports = (function()
 			return smoothed_counts; 
 		},
 
+		/**
+		 *
+		 * 	Smooths provided counts or gives their smoothed probability using the classic simple good-turing algorithm.
+		 *	The 
+		 *	For performance reasons, parameters are not validated.
+		 * 
+		 *	@alias module:good_turing#simple	
+		 *	@public
+		 *	@readonly
+		 *	@param {!dict.<integer, integer>} count_freq - A map from raw counts to their frequencies. 	
+		 *	@param {...integer} count_freq.1..inf - The raw count with its frequency.
+		 *	@param {!boolean} [probs=false] - Flag to indicate whether smoothed probabilities or smoothed counts should be returned.
+		 *	@param {!float} [conf=1.96] - Confidence value for the hypothesis test 
+		 *	@returns {dict.<integer, float>} - A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.
+		 */		
 		simple(count_freq, probs = false, conf = 1.96)
 		{
  			const counts = keys(count_freq).map(c => +c).sort((a, b) => a > b ? 1: a < b? -1 : 0), n = counts.length;
@@ -94,7 +119,7 @@ module.exports = (function()
 
 			return smoothed_counts;
 		},
-
+		/** calculates smoothed probabilities from the counts smoothed in the simple good-turing function */
 		_as_stg_probs(smoothed_counts, counts, n, N, non_zero_N)
 		{
 			smoothed_counts[0] /= N;
@@ -108,7 +133,7 @@ module.exports = (function()
 
 			return smoothed_counts;
 		},
-
+		/** transforms the counts frequencies into their z-values to allow proper interpolation by the log regression function */ 
 		_count_zfreq(count_freq, counts, n)
 		{
 			const count_zfreq = {[counts[0]]: count_freq[counts[0]]/(.5*counts[1])};		
@@ -124,7 +149,10 @@ module.exports = (function()
 
 			return count_zfreq; 
 		},
-
+		/**
+		 *	returns regression function that predicts the frequency (dependent y-variable) of the 
+		 *	given count (independent x-value), by creating a regression line in log-space
+		 */
 		_log_regression(count_freq)
 		{
 			const counts = keys(count_freq);

@@ -14,11 +14,11 @@ const program = coerced(require('commander')
   	.usage('<input file> <output file> [options]')
 	.arguments('<input file> <output file>')
   	.option('-t, --type [c|p]', 'output type: smoothed counts [c] or smoothed probability of counts [p], defaults to [c]', type => type.trim().toUpperCase())
-  	.option('-a, --algo [s|m]', 'smoothing algorithm: simple [s] or adaptive minmax [m], defaults to [s]', algo => algo.trim().toUpperCase())  
+  	.option('-a, --algo [s|m]', 'smoothing algorithm: simple [s] or minmax [m], defaults to [s]', algo => algo.trim().toUpperCase())  
   	.option('-c, --confidence <number>', 'confidence level for simple good-turing, defaults to 1.96', parseFloat)    
 	.parse(process.argv));
 
-const 	algo = program.algo === 'M'? gt.adaptive_minmax : gt.simple, 
+const 	algo = program.algo === 'M'? gt.minmax : gt.simple, 
 		infile = program.args[0], outfile = program.args[1];
 
 smoothed_to(outfile, algo(count_freq_from(infile), program.type === 'P', program.confidence));
