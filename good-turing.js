@@ -1,8 +1,11 @@
 //jshint esversion:6, -W008 
 /**
+ * provides functions to compute smoothing of probability mass distributions
+ * 
  * @module good_turing
  * 
  */
+
 module.exports = (function()
 {	
 	'use strict';
@@ -10,7 +13,10 @@ module.exports = (function()
 	const undef = obj => typeof obj === 'undefined', {keys} = Object, {log , exp , sqrt, abs} = Math, sq = x => x*x;	
 			
 	const o =
-	{		
+	{
+		/**
+		 *
+		 * */		
 		adaptive_minmax(count_freq, probs = false)
 		{  
 			const smoothed_counts = {};			  				

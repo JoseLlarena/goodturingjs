@@ -24,8 +24,8 @@ task('compile', ['lint'],  _ =>
 
 task('test', ['compile'],  _ => src(['test.js']).pipe(mocha({reporter: 'spec'})));
 
-task('doc', ['test'], _ => src(['README.md', 'good-turing.js'], {read: false}).pipe(jsdoc()));
+task('doc', ['test'], _ => src(['README.md', 'good-turing.js'], {read: false}).pipe(jsdoc(require('./jsdoc.json'))));
 
 task('watch', _ =>  gulp.watch(['good-turing.js', 'good-turing-cli.js', 'test.js'], ['doc']));
 
-task('default', ['doc']);
+task('default', ['watch']);
