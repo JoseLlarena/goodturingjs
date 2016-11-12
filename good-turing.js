@@ -151,7 +151,7 @@ module.exports = (function()
 		},
 		/**
 		 *	returns regression function that predicts the frequency (dependent y-variable) of the 
-		 *	given count (independent x-value), by creating a regression line in log-space
+		 *	given count (independent x-value), by creating a regression line 	in log-space
 		 */
 		_log_regression(count_freq)
 		{

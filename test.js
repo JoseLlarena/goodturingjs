@@ -1,6 +1,6 @@
 //jshint esversion: 6, node: true, -W008 
 'use strict'; 	
-const should = require('should'), gt = require('./good-turing.min.js'), {describe, it} = require('mocha');
+const should = require('chai').should(), gt = require('./good-turing.min.js'), {describe, it} = require('mocha');
 const {assign, keys} = Object, {exp} = Math;  
 
 describe('api', _ =>
@@ -31,16 +31,16 @@ describe('api', _ =>
 			(+(+smoothed[count]).toPrecision('4')).should.eql(gold_standard[count]);
 	});
 
-	const count_freq2 = {0: 9, 1: 8, 2: 6, 3: 5, 4: 5, 5: 3, 6: 1};		
+	const count_freq_zero = {0: 9, 1: 8, 2: 6, 3: 5, 4: 5, 5: 3, 6: 1};		
 
 	it('computes smoothed counts, using adaptive minmax',  function()
 	{ 		
-		gt.minmax(count_freq2).should.eql({0: 9, 1: 1.75, 2: 3, 3: 4.8, 4: 4, 5: 5, 6: 6});
+		gt.minmax(count_freq_zero).should.eql({0: 9, 1: 1.75, 2: 3, 3: 4.8, 4: 4, 5: 5, 6: 6});
 	});  	
 	
 	it('computes smoothed probability, using adaptive minmax',  function()
 	{ 			
-		const smoothed = gt.minmax(count_freq2, true);		 
+		const smoothed = gt.minmax(count_freq_zero, true);		 
 
 		const expected = {0: .0849, 1: .0165, 2: .0283, 3: .0453, 4: .0377, 5: .0472, 6: .0566};	
 
