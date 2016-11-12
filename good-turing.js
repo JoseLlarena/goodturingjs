@@ -60,6 +60,7 @@ module.exports = (function()
 		/**
 		 *
 		 * 	Smooths provided counts or gives their smoothed probability using the classic simple good-turing algorithm.
+		 * 
 		 *	The 
 		 *	For performance reasons, parameters are not validated.
 		 * 
