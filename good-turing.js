@@ -74,7 +74,7 @@ module.exports = (function()
 		 */		
 		simple(count_freq, probs = false, conf = 1.96)
 		{
- 			const counts = keys(count_freq).map(c => +c).sort((a, b) => a > b ? 1: a < b? -1 : 0), n = counts.length;
+ 			const counts = keys(count_freq).sort((a, b) => +a > +b ? 1: +a < +b? -1 : 0), n = counts.length;
  			const log_reg = o._log_regression(o._count_zfreq(count_freq, counts, n));  
 
 			const smoothed_counts = {0: count_freq[1] || 0}; 	
