@@ -1,6 +1,6 @@
 //jshint esversion:6, -W008 
 /**
- * Functions to compute smoothing of probability mass distributions
+ * Functions to compute smoothing of probability mass distributions using Good-Turing estimators
  * 
  * @module good_turing
  * 
@@ -13,19 +13,18 @@ module.exports = (function()
 
 	const o =
 	{
-	 
 		/**
-		 *
-		 * 	Smooths provided counts or gives their smoothed probability.
-		 *	For performance reasons, parameters are not validated.
+		 * <p>Smooths provided counts or gives their smoothed probability using the adaptive min-max algorithm used to prove optimality in
+		 * {@link https://papers.nips.cc/paper/5762-competitive-distribution-estimation-why-is-good-turing-good.pdf|Orlitsky & Suresh (2015)}<br>
+		 * For performance reasons, parameters are not validated.</p>
 		 * 
 		 * 	@alias module:good_turing#minmax	
 		 *	@public
 		 *	@readonly
-		 *	@param {!dict.<integer, integer>} count_freq - A map from raw counts to their frequencies.
+		 *	@param {!dict.<integer,integer>} count_freq - A map from raw counts to their frequencies.
 		 *	@param {...integer} count_freq.0..inf - The raw count with its frequency.
 		 *	@param {!boolean} [probs=false] - Flag to indicate whether smoothed probabilities or smoothed counts should be returned.
-		 *	@returns {dict.<integer, float>} - A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.
+		 *	@returns {dict.<integer,float>} - A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.
 		 */		
 		minmax(count_freq, probs = false)
 		{  
@@ -58,25 +57,27 @@ module.exports = (function()
 		},
 
 		/**
-		 *
-		 * 	Smooths provided counts or gives their smoothed probability using the classic simple good-turing algorithm.
-		 * 
-		 *	The 
-		 *	For performance reasons, parameters are not validated.
-		 * 
+		 * 	<p>Smooths provided counts or gives their smoothed probability using the classic Simple Good-Turing algorithm
+		 *  as described in	{@link http://diskworld.wharton.upenn.edu/~foster/teaching/data_mining/good_turing.pdf|Gale et al (1995)} and
+		 *  following the implementation in {@link http://www.grsampson.net/D_SGT.c|Dennis et al (2008)}<br>
+		 *	For performance reasons, parameters are not validated.</p>
 		 *	@alias module:good_turing#simple	
 		 *	@public
 		 *	@readonly
-		 *	@param {!dict.<integer, integer>} count_freq - A map from raw counts to their frequencies. 	
-		 *	@param {...integer} count_freq.1..inf - The raw count with its frequency.
+		 *	@param {!dict.<integer,integer>} count_freq - A map from raw counts to their frequencies. 	
+		 *	@param {...integer} count_freq.1..inf - The raw count with its frequency. Zero counts must not be included.
 		 *	@param {!boolean} [probs=false] - Flag to indicate whether smoothed probabilities or smoothed counts should be returned.
-		 *	@param {!float} [conf=1.96] - Confidence value for the hypothesis test 
-		 *	@returns {dict.<integer, float>} - A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.
+		 *	@param {!float} [sig=1.96] - <p>Level of significance as critical z-score for the two-tailed test for choosing between Turing and Linear Good-Turing frequency estimators<br><br>
+		 *	The Turing estimator uses the raw frequency as given in count_freq, whereas the Linear Good-Turing (LGT) one uses a smoothed transformation.<br>
+		 *	The algorithm will switch from Turing to LGT if the latter is sufficiently different from the former. This is tested with a two-tailed z-test <br>
+		 *	for the difference between both estimators,	using the sig parameter as the critical value. The larger the value the more likely it is <br>
+		 *	that it will switch to LGT. The default value of 1.96 corresponds to a 99% level of significance</p>
+		 *	@returns {dict.<integer,float>} - <p>A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.</p>
 		 */		
-		simple(count_freq, probs = false, conf = 1.96)
+		simple(count_freq, probs = false, sig = 1.96)
 		{
  			const counts = keys(count_freq).sort((a, b) => +a > +b ? 1: +a < +b? -1 : 0), n = counts.length;
- 			const log_reg = o._log_regression(o._count_zfreq(count_freq, counts, n));  
+ 			const log_reg = o._log_regression(o._count_avg_freq(count_freq, counts, n));  
 
 			const smoothed_counts = {0: count_freq[1] || 0}; 	
  
@@ -84,23 +85,23 @@ module.exports = (function()
 
 			for(let i = 0, use_good_turing = false; i < n; i++)
 			{
-				const c = +counts[i], f = count_freq[c],  good_turing = (c+1)*log_reg(c+1)/log_reg(c);	
+				const c = +counts[i], f = count_freq[c],  linear_good_turing = (c+1)*log_reg(c+1)/log_reg(c);	
  				if(use_good_turing)
 				{
-					smoothed_counts[c] = good_turing; 
+					smoothed_counts[c] = linear_good_turing; 
 				}
 				else if(undef(count_freq[c+1]))
 				{
-					smoothed_counts[c] = good_turing; 
+					smoothed_counts[c] = linear_good_turing; 
 					use_good_turing = true;
 				}				
 				else if(!use_good_turing)
 				{  		
 					const ff = count_freq[c+1], turing = (c+1)* ff/f;  
 
-					if(abs(turing - good_turing) <= conf * sqrt( sq(c+1) * ff/sq(f) * (1+ff/f) ))
+					if(abs(turing - linear_good_turing) <= sig * sqrt( sq(c+1) * ff/sq(f) * (1+ff/f) ))
 					{
-						smoothed_counts[c] =  good_turing;	
+						smoothed_counts[c] =  linear_good_turing;	
 						use_good_turing = true;
 					}					
 					else
@@ -134,25 +135,25 @@ module.exports = (function()
 
 			return smoothed_counts;
 		},
-		/** transforms the counts frequencies into their z-values to allow proper interpolation by the log regression function */ 
-		_count_zfreq(count_freq, counts, n)
+		/** transforms the counts' frequencies into an averaged value to allow proper interpolation by the log regression function */ 
+		_count_avg_freq(count_freq, counts, n)
 		{
-			const count_zfreq = {[counts[0]]: count_freq[counts[0]]/(.5*counts[1])};		
+			const count_avg_freq = {[counts[0]]: count_freq[counts[0]]/(.5*counts[1])};		
 			
 			for(let i = 1; i < n-1; i++ )
 			{
 				const c = counts[i];				
 			 
-				count_zfreq[c] = count_freq[c]/(.5*(counts[i+1] - counts[i-1]));	 	 
+				count_avg_freq[c] = count_freq[c]/(.5*(counts[i+1] - counts[i-1]));	 	 
 			}
 
-			count_zfreq[counts[n-1]] = count_freq[counts[n-1]]/(counts[n-1] - counts[n-2]);
+			count_avg_freq[counts[n-1]] = count_freq[counts[n-1]]/(counts[n-1] - counts[n-2]);
 
-			return count_zfreq; 
+			return count_avg_freq; 
 		},
 		/**
 		 *	returns regression function that predicts the frequency (dependent y-variable) of the 
-		 *	given count (independent x-value), by creating a regression line 	in log-space
+		 *	given count (independent x-value), by creating a regression line of frequency on count in log-space
 		 */
 		_log_regression(count_freq)
 		{

@@ -1,17 +1,16 @@
 # goodturingjs
 
-Command line tool and library for smoothing of probability mass functions
+Command line interface and library for the smoothing of probability mass functions
 
-[api documentation](goodturingjs.github.io)
+[Library API documentation](goodturingjs.github.io)
 
 ## Getting Started
 
 ### Prerequisites
 
-[nodejs](https://nodejs.org/en/download/)
+[nodejs](https://nodejs.org/en/download/), for the CLI only
 
-### Installing the command line tool
-
+### Installing the CLI
 
 ```
 npm i goodturing
@@ -20,11 +19,11 @@ npm i goodturing
 #### usage 
 
 ```
-node good-turing-cli -h
+node goodturing -h
 ```
 ```
 
-  Usage: good-turing-cli <input file> <output file> [options]
+  Usage: good-turing <input file> <output file> [options]
 
   recalculates counts and count probabilities of a probability mass distribution using good-turing smoothing
   <input file> should contain two whitespace-separated columns, the first being the raw count and the secound its frequency
@@ -38,7 +37,7 @@ node good-turing-cli -h
     -V, --version              output the version number
     -t, --type [c|p]           output type: smoothed counts [c] or smoothed probability of counts [p], defaults to [c]
     -a, --algo [s|m]           smoothing algorithm: simple [s] or minmax [m], defaults to [s]
-    -c, --confidence <number>  confidence level for simple good-turing, defaults to 1.96
+    -c, --confidence <number>  level of significance as z-score for Simple Good-Turing, defaults to 1.96
 ```
 
 ### Installing the library
@@ -60,8 +59,7 @@ Only for the library:
 
 ```
 npm test
-```
- 
+``` 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](../LICENSE.md) file for details

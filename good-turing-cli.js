@@ -15,7 +15,7 @@ const program = coerced(require('commander')
 	.arguments('<input file> <output file>')
   	.option('-t, --type [c|p]', 'output type: smoothed counts [c] or smoothed probability of counts [p], defaults to [c]', type => type.trim().toUpperCase())
   	.option('-a, --algo [s|m]', 'smoothing algorithm: simple [s] or minmax [m], defaults to [s]', algo => algo.trim().toUpperCase())  
-  	.option('-c, --confidence <number>', 'confidence level for simple good-turing, defaults to 1.96', parseFloat)    
+  	.option('-c, --confidence <number>', 'level of significance as z-score for Simple Good-Turing, defaults to 1.96', parseFloat)    
 	.parse(process.argv));
 
 const 	algo = program.algo === 'M'? gt.minmax : gt.simple, 
