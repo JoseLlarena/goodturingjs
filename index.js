@@ -15,13 +15,13 @@ const program = coerced(require('commander')
 	.arguments('<input file> <output file>')
   	.option('-t, --type [c|p]', 'output type: smoothed counts [c] or smoothed probability of counts [p], defaults to [c]', type => type.trim().toUpperCase())
   	.option('-a, --algo [s|m]', 'smoothing algorithm: simple [s] or minmax [m], defaults to [s]', algo => algo.trim().toUpperCase())  
-  	.option('-c, --confidence <number>', 'level of significance as z-score for Simple Good-Turing, defaults to 1.96', parseFloat)    
+  	.option('-c, --crit <number>', 'critical value for Turing/Linear-Good-Turing switch for Simple Good-Turing, defaults to 1.96', parseFloat)    
 	.parse(process.argv));
 
 const 	algo = program.algo === 'M'? gt.minmax : gt.simple, 
 		infile = program.args[0], outfile = program.args[1];
 
-smoothed_to(outfile, algo(count_freq_from(infile), program.type === 'P', program.confidence));
+smoothed_to(outfile, algo(count_freq_from(infile), program.type === 'P', program.crit));
 
 
 function coerced(program)
@@ -43,18 +43,18 @@ function coerced(program)
 		program.help(text => '\n  ALGO NEEDS TO BE [s] OR [m]\n'+ text);
 	}
 
-	if(!undef(program.confidence))
+	if(!undef(program.crit))
 	{
-		if(!isNaN(program.confidence) && isFinite(program.confidence) && program.confidence >= 0)
+		if(!isNaN(program.crit) && isFinite(program.crit) && program.crit >= 0)
 		{
-			if(program.algo !== 'S') program.help(text => '\n  CONFIDENCE IS ONLY APPLICABLE TO THE [s] OPTION\n'+ text);
+			if(program.algo !== 'S') program.help(text => '\n  CRITICAL VALUE IS ONLY APPLICABLE TO THE [s] OPTION\n'+ text);
 		}
 		else
 		{
-			program.help(text => '\n  CONFIDENCE NEEDS TO BE A POSITIVE NUMBER\n'+ text);
+			program.help(text => '\n  CRITICAL VALUE NEEDS TO BE A POSITIVE NUMBER\n'+ text);
 		}	
 	}
-	program.confidence = program.confidence || 1.96;
+	program.crit = program.crit || 1.96;
 
 	return program;
 }

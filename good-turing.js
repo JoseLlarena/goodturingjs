@@ -21,10 +21,12 @@ module.exports = (function()
 		 * 	@alias module:good_turing#minmax	
 		 *	@public
 		 *	@readonly
-		 *	@param {!dict.<integer,integer>} count_freq - A map from raw counts to their frequencies.
+		 *	@param {!dict.<integer,integer>} count_freq - <p>A map from raw counts to their frequencies.</p>
 		 *	@param {...integer} count_freq.0..inf - The raw count with its frequency.
 		 *	@param {!boolean} [probs=false] - Flag to indicate whether smoothed probabilities or smoothed counts should be returned.
-		 *	@returns {dict.<integer,float>} - A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.
+		 *	@returns {dict.<integer,float>} - <p> A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.<br>
+		 *	Unlike [good_turing.simple]{@linkcode module:good_turing#simple} zero (unseen) counts/probabilities are not computed unless they are passed in the count_freq argument.<br>
+		 *	If they are passed in, just as in [good_turing.simple]{@linkcode module:good_turing#simple}, the counts/probabilites are the combined values for all unseen symbols</p>
 		 */		
 		minmax(count_freq, probs = false)
 		{  
@@ -67,14 +69,15 @@ module.exports = (function()
 		 *	@param {!dict.<integer,integer>} count_freq - A map from raw counts to their frequencies. 	
 		 *	@param {...integer} count_freq.1..inf - The raw count with its frequency. Zero counts must not be included.
 		 *	@param {!boolean} [probs=false] - Flag to indicate whether smoothed probabilities or smoothed counts should be returned.
-		 *	@param {!float} [sig=1.96] - <p>Level of significance as critical z-score for the two-tailed test for choosing between Turing and Linear Good-Turing frequency estimators<br><br>
+		 *	@param {!float} [crit=1.96] - <p>Level of significance as critical value for the two-tailed test for choosing between Turing and Linear Good-Turing frequency estimators<br><br>
 		 *	The Turing estimator uses the raw frequency as given in count_freq, whereas the Linear Good-Turing (LGT) one uses a smoothed transformation.<br>
-		 *	The algorithm will switch from Turing to LGT if the latter is sufficiently different from the former. This is tested with a two-tailed z-test <br>
+		 *	The algorithm will switch from Turing to LGT if the latter is sufficiently different from the former. This is tested with a two-tailed test <br>
 		 *	for the difference between both estimators,	using the sig parameter as the critical value. The larger the value the more likely it is <br>
-		 *	that it will switch to LGT. The default value of 1.96 corresponds to a 99% level of significance</p>
-		 *	@returns {dict.<integer,float>} - <p>A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.</p>
+		 *	that it will switch to LGT. The default value of 1.96 corresponds to a 95% level of significance</p>
+		 *	@returns {dict.<integer,float>} - <p>A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.<br>
+		 *	The zero counts/probabilites are the combined values for all unseen symbols</p>
 		 */		
-		simple(count_freq, probs = false, sig = 1.96)
+		simple(count_freq, probs = false, crit = 1.96)
 		{
  			const counts = keys(count_freq).sort((a, b) => +a > +b ? 1: +a < +b? -1 : 0), n = counts.length;
  			const log_reg = o._log_regression(o._count_avg_freq(count_freq, counts, n));  
@@ -99,7 +102,7 @@ module.exports = (function()
 				{  		
 					const ff = count_freq[c+1], turing = (c+1)* ff/f;  
 
-					if(abs(turing - linear_good_turing) <= sig * sqrt( sq(c+1) * ff/sq(f) * (1+ff/f) ))
+					if(abs(turing - linear_good_turing) <= crit * sqrt( sq(c+1) * ff/sq(f) * (1+ff/f) ))
 					{
 						smoothed_counts[c] =  linear_good_turing;	
 						use_good_turing = true;
