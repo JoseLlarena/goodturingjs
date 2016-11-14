@@ -77,6 +77,8 @@ npm ln goodturing
 
 #### In the browser
 
+`good-turing.min.js` is a es5-babelised uglified version of `good-turing.js`
+
 ```
 <script src='good-turing.min.js'></script>
 ```
