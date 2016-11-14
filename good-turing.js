@@ -2,7 +2,7 @@
 /**
  * Functions to compute smoothing of probability mass distributions using Good-Turing estimators
  * 
- * @module good_turing
+ * @module goodturing
  * 
  */
 module.exports = (function()
@@ -18,15 +18,15 @@ module.exports = (function()
 		 * {@link https://papers.nips.cc/paper/5762-competitive-distribution-estimation-why-is-good-turing-good.pdf|Orlitsky & Suresh (2015)}<br>
 		 * For performance reasons, parameters are not validated.</p>
 		 * 
-		 * 	@alias module:good_turing#minmax	
+		 * 	@alias module:goodturing#minmax	
 		 *	@public
 		 *	@readonly
 		 *	@param {!dict.<integer,integer>} count_freq - <p>A map from raw counts to their frequencies.</p>
 		 *	@param {...integer} count_freq.0..inf - The raw count with its frequency.
 		 *	@param {!boolean} [probs=false] - Flag to indicate whether smoothed probabilities or smoothed counts should be returned.
 		 *	@returns {dict.<integer,float>} - <p> A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.<br>
-		 *	Unlike [good_turing.simple]{@linkcode module:good_turing#simple} zero (unseen) counts/probabilities are not computed unless they are passed in the count_freq argument.<br>
-		 *	If they are passed in, just as in [good_turing.simple]{@linkcode module:good_turing#simple}, the counts/probabilites are the combined values for all unseen symbols</p>
+		 *	Unlike [goodturing.simple]{@linkcode module:good_turing#simple} zero (unseen) counts/probabilities are not computed unless they are passed in the count_freq argument.<br>
+		 *	If they are passed in, just as in [goodturing.simple]{@linkcode module:goodturing#simple}, the smoothed counts/probabilites are the combined values for all unseen symbols</p>
 		 */		
 		minmax(count_freq, probs = false)
 		{  
@@ -63,7 +63,7 @@ module.exports = (function()
 		 *  as described in	{@link http://diskworld.wharton.upenn.edu/~foster/teaching/data_mining/good_turing.pdf|Gale et al (1995)} and
 		 *  following the implementation in {@link http://www.grsampson.net/D_SGT.c|Dennis et al (2008)}<br>
 		 *	For performance reasons, parameters are not validated.</p>
-		 *	@alias module:good_turing#simple	
+		 *	@alias module:goodturing#simple	
 		 *	@public
 		 *	@readonly
 		 *	@param {!dict.<integer,integer>} count_freq - A map from raw counts to their frequencies. 	

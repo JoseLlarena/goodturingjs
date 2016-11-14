@@ -4,13 +4,14 @@
 const fs = require('fs'), gt = require('./good-turing.js'), {log} = console, {keys} = Object, undef = _ => typeof _ === 'undefined';
  
 const program = coerced(require('commander')
+	.command('goodturing')
 	.version('1.0.0')	 	
   	.description(
 		  `recalculates counts and count probabilities of a probability mass distribution using good-turing smoothing
   <input file> should contain two whitespace-separated columns, the first being the raw count and the secound its frequency
   <output file> will be created/overwritten with two tab-separated columnns, the first being the input raw count and the second 
-  the smoothed count or its smoothed probability; for zero raw counts, the smooth count and its probability are aggregated over all symbols with zero counts 
-  `)
+  the smoothed count or its smoothed probability; for zero raw counts, the smooth count and its probability are aggregated over 
+  all symbols with zero counts`)  	
   	.usage('<input file> <output file> [options]')
 	.arguments('<input file> <output file>')
   	.option('-t, --type [c|p]', 'output type: smoothed counts [c] or smoothed probability of counts [p], defaults to [c]', type => type.trim().toUpperCase())

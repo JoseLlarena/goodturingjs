@@ -2,4 +2,4 @@
 
 'use strict';
 
-require('../');
+require('../good-turing-cli.js');

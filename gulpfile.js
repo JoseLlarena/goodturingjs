@@ -13,7 +13,7 @@ const gulp = require('gulp'),
 task('lint', _ => src(['good-turing.js', 'good-turing-cli.js', 'test.js']).pipe(linter()).pipe(linter.reporter('default')));
 
 task('compile', ['lint'],  _ =>
-            browserify('./good-turing.js', {debug: true, standalone: 'good_turing'})
+            browserify('./good-turing.js', {debug: true, standalone: 'goodturing'})
             .transform(babel, {presets: ['es2015']})
             .bundle()
             .pipe(source('good-turing.js'))
@@ -26,6 +26,6 @@ task('test', ['compile'],  _ => src(['test.js']).pipe(mocha({reporter: 'spec'}))
 
 task('doc', ['test'], _ => src(['README.md', 'good-turing.js'], {read: false}).pipe(jsdoc(require('./jsdoc.json'))));
 
-task('watch', _ =>  gulp.watch(['good-turing.js', 'good-turing-cli.js', 'test.js', 'README.md'], ['doc']));
+task('watch', _ =>  gulp.watch(['good-turing.js', 'index.js', 'test.js', 'README.md'], ['doc']));
 
 task('default', ['watch']);
