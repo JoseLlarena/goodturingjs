@@ -2,7 +2,7 @@
 
 Command line interface and library for the smoothing of probability mass functions
 
-[Library API documentation](goodturingjs.github.io)
+[Library API documentation](https://josellarena.github.io/goodturingjs/module-goodturing.html)
 
 ## Getting Started
 
