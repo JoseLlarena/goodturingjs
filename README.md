@@ -12,6 +12,7 @@ Command line interface and library for the smoothing of probability mass functio
 
 ### Installing the CLI
 
+
 globally:
 
 ```
@@ -22,7 +23,8 @@ locally:
 ```
 npm i goodturing
 ```
-#### usage 
+#### Usage
+
 
 global:
 
@@ -57,7 +59,9 @@ local:
 
 ### Installing the library
 
+
 #### In node
+
 
 ```
 git clone git@github.com:josellarena/goodturingjs.git
@@ -77,7 +81,8 @@ npm ln goodturing
 
 #### In the browser
 
-`good-turing.min.js` is a es5-babelised uglified version of `good-turing.js`
+
+`good-turing.min.js` is an uglified es5-babelised version of `good-turing.js`
 
 ```
 <script src='good-turing.min.js'></script>
@@ -86,6 +91,7 @@ npm ln goodturing
  
 
 ### Uninstalling
+
 
 globally:
 
@@ -100,6 +106,7 @@ npm un goodturing
 
 ## Running the tests
 
+
 Only for the library:
 ```
 npm test
@@ -109,5 +116,6 @@ if mocha not installed, first do:
 npm i mocha 
 ```
 ## License
+
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
