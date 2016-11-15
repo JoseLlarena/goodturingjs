@@ -111,9 +111,9 @@ Only for the library:
 ```
 npm test
 ``` 
-if mocha not installed, first do:
+if mocha and chai not installed, first do:
 ```
-npm i mocha 
+npm i mocha chai
 ```
 ## License
 
