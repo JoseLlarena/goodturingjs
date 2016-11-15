@@ -72,7 +72,7 @@ module.exports = (function()
 		 *	@param {!float} [crit=1.96] - <p>Level of significance as critical value for the two-tailed test for choosing between Turing and Linear Good-Turing frequency estimators<br><br>
 		 *	The Turing estimator uses the raw frequency as given in count_freq, whereas the Linear Good-Turing (LGT) one uses a smoothed transformation.<br>
 		 *	The algorithm will switch from Turing to LGT if the latter is sufficiently different from the former. This is tested with a two-tailed test <br>
-		 *	for the difference between both estimators,	using the sig parameter as the critical value. The larger the value the more likely it is <br>
+		 *	for the difference between both estimators,	using the crit parameter as the critical value. The larger the value the more likely it is <br>
 		 *	that it will switch to LGT. The default value of 1.96 corresponds to a 95% level of significance</p>
 		 *	@returns {dict.<integer,float>} - <p>A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.<br>
 		 *	The zero counts/probabilites are the combined values for all unseen symbols</p>
