@@ -25,7 +25,7 @@ module.exports = (function()
 		 *	@param {...integer} count_freq.0..inf - The raw count with its frequency.
 		 *	@param {!boolean} [probs=false] - Flag to indicate whether smoothed probabilities or smoothed counts should be returned.
 		 *	@returns {dict.<integer,float>} - <p> A map from raw counts (as passed in the count_freq parameter) to their corresponding smoothed counts or probabilites.<br>
-		 *	Unlike [goodturing.simple]{@linkcode module:good_turing#simple} zero (unseen) counts/probabilities are not computed unless they are passed in the count_freq argument.<br>
+		 *	Unlike [goodturing.simple]{@linkcode module:goodturing#simple} zero (unseen) counts/probabilities are not computed unless they are passed in the count_freq argument.<br>
 		 *	If they are passed in, just as in [goodturing.simple]{@linkcode module:goodturing#simple}, the smoothed counts/probabilites are the combined values for all unseen symbols</p>
 		 */		
 		minmax(count_freq, probs = false)
